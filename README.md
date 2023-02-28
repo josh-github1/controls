@@ -1,2 +1,2 @@
 # nonlinear_control
-controls sandbox | referencing the literature by Slotine, 'Applied Nonlinear Control'
+I'm posting my attempts at nonlinear control system simulations in this repo. Referencing the text by Slotine

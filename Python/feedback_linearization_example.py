@@ -19,12 +19,12 @@ def sys_ode(x, t, gains):
     u = control(x, gains, t=0)
   else:
     u = control(x, gains, t)
-  # Define direvitive
+  # Define derivative
   dx_1 = x[2] 
   dx_2 = x[3]
   ddx_1 = (1/I)*(u-b*x[2]-k*(x[0]-x[1]))
   ddx_2 = (1/(m*(L**2)))*(k*(x[0]-x[1])- m*g*L*np.sin(x[1]))
-  dx = dx_1, dx_2, ddx_1, ddx_2
+  dx = [dx_1, dx_2, ddx_1, ddx_2]
   return dx
 
 

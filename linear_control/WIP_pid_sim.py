@@ -1,11 +1,18 @@
-# PID Simulation for OH
+# PID Simulation for OH w/out odeint
 
 import numpy as np
 import matplotlib.pyplot as plt
 
 
-def rk4(x0, y0, xn, n):
+def rk4(sys_ode,
+        x0, 
+        y0, 
+        xn, 
+        n):
   """Classic Runge-Kutta Method.
+
+  The xn's would be the next point in time
+  that's found in the for loop iteration (I think).
 
   Args:
 
@@ -42,8 +49,9 @@ def rk4(x0, y0, xn, n):
 # w --> wd
 # v = k*(wd-w)
 # Do P controller 1st then PI controller
-def plant_ode(y, t, u):
+def plant_ode(y, u):
   """ODE from office hours."""
+
   return (-5/2)*y + (1/2)*u
 
 
@@ -78,6 +86,7 @@ def PID_controller(t,
   """
   
   error = set_point - process_var
+  print("The current error is: " + str(error))
   proportional_component = Kp*error
   integral_component = 0
   derivative_component = 0
@@ -95,17 +104,40 @@ def PID_controller(t,
   
   u = proportional_component + integral_component + derivative_component
 
-  return u, integral_error
+  return u, error, integral_error
 
 
 # WIP
-def sys_ode(t, delta_t):
-  """System ODE to solve with RK4."""
-  return None
+def sys_ode(t, y):
+  """System ODE to solve with RK4.
+  
+  We should be providing these with 
+
+  Args:
+    t: current time
+    y: output var
+
+  """
+  u, error, integral_error = PID_controller(t, .01, 1, y, 10)
+  sys_ode_output = plant_ode(y, u)
+  return sys_ode_output
 
 
 def main():
   print("Starting Controller sim. ")
+
+  total_time = np.linspace(0, 10, 100)
+  delta_t = .01
+  output_list = []
+
+  x = 0
+  y = 0
+  index = 0
+  for i in total_time:
+    next = index + 1
+    y = rk4(sys_ode, x, y, total_time[next], 30)
+    output_list.append(y)
+
 
 
 if __name__ == "__main__":

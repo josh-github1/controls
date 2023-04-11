@@ -49,8 +49,8 @@ def rk4(sys_ode,
 # w --> wd
 # v = k*(wd-w)
 # Do P controller 1st then PI controller
-def plant_ode(y, u):
-  """ODE from office hours."""
+def plant_ode_converted(y, u):
+  """Converted ODE from office hours."""
 
   return (-5/2)*y + (1/2)*u
 
@@ -94,6 +94,8 @@ def PID_controller(t,
   # if time is >= 1 second, then there should be
   # previous values for computing the integral
   # and derivative component
+  # 4-10-23 Update: should change this according to 
+  #                 the time step, instead of 1 sec
   if t >= 1:
     if Ki and integral_error:
       integral_error = integral_error + error*delta_t 
@@ -109,7 +111,7 @@ def PID_controller(t,
 
 # WIP
 def sys_ode(t, y):
-  """System ODE to solve with RK4.
+  """System ODE with controller to solve with RK4.
   
   We should be providing these with 
 
@@ -119,7 +121,7 @@ def sys_ode(t, y):
 
   """
   u, error, integral_error = PID_controller(t, .01, 1, y, 10)
-  sys_ode_output = plant_ode(y, u)
+  sys_ode_output = plant_ode_converted(y, u)
   return sys_ode_output
 
 
@@ -127,15 +129,18 @@ def main():
   print("Starting Controller sim. ")
 
   total_time = np.linspace(0, 10, 100)
-  delta_t = .01
+  # delta_t = .01
   output_list = []
 
   x = 0
   y = 0
   index = 0
+
+  # 4-10-23: can't make sense of the output 
   for i in total_time:
     next = index + 1
-    y = rk4(sys_ode, x, y, total_time[next], 30)
+    y = rk4(sys_ode, i, y, total_time[next], 30)
+    x = total_time[next]
     output_list.append(y)
 
 

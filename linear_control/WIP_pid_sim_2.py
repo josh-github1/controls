@@ -4,68 +4,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import odeint
 
-
-"""
-It should be simple, Matlab:
-
-% x_dot + ax = u;
-% u = kp*e
-
-% x(k+1) = x(k)*(1-a*dt) + u(k)*dt
-
-t = [0:0.01:10];
-r = 2*sin(0.2*2*pi*t) + 5*sin(0.3*2*pi*t);
-
-figure; plot(t,r)
-
-a = 5;
-kp = 100;
-x(1) = 0.5;
-
-for k = 1:length(t)-1
-    dt = t(k+1) - t(k);
-
-    u(k) = kp*(r(k)-x(k));
-
-    x(k+1) = x(k)*(1-a*dt) + u(k)*dt;
-
-end
-
-figure; plot(t,r,t,x)
-
-"""
-
-
-
-def explicit_euler_method(plant_ode_converted, y0, t0, t, dt: float):
-  """Explicit Euler Method
-
-  Args:
-    ode: Diff Eq. to solve for
-    y0: initial function output
-    t0: initial time
-    t: total time to run solver
-    dt: time delta
-
-  Returns:
-
-  """
-  y_curr = y0
-  t_curr = t0
-  while (t_curr <= t):
-    y_curr = y_curr + dt*plant_ode_converted(y_curr, t_curr)
-    t_curr = t_curr + dt
-  return y_curr
-
-
-
-
-
-
-
-
-
-
 def rk4(sys_ode,
         x0, 
         y0, 
@@ -111,7 +49,7 @@ def rk4(sys_ode,
 # w --> wd
 # v = k*(wd-w)
 # Do P controller 1st then PI controller
-def plant_ode_converted(y: float, u: float):
+def plant_ode_converted(y, u):
   """Converted ODE from office hours."""
 
   return (-5/2)*y + (1/2)*u
@@ -158,8 +96,7 @@ def PID_controller(t,
   # and derivative component
   # 4-10-23 Update: should change this according to 
   #                 the time step, instead of 1 sec
-  # if (t >= 1).any():
-  if t >= 1:
+  if (t >= 1).any():
     if Ki and integral_error:
       integral_error = integral_error + error*delta_t 
       integral_component = Ki * integral_error
@@ -183,12 +120,8 @@ def sys_ode(t, y):
     y: output var
 
   """
-  
   Kp = 1  # need to update this value
-  Ki = 20
-  Kd = 5
-
-  u, error, integral_error = PID_controller(t, .01, Kp, y, 10, Ki)
+  u, error, integral_error = PID_controller(t, .01, Kp, y, 10)
   sys_ode_output = plant_ode_converted(y, u)
   global_error.append(error)
   return sys_ode_output
@@ -206,32 +139,18 @@ def main():
   y = 0
   index = 0
   IC = [0]
-  y_des = 10
-  integral_error = 0    # initial integral error
-  # 4-10-23: can't make sense of the output 
-  for i in total_time:
-    # next = index + 1
-    # y1 = rk4(sys_ode, i, y, total_time[next], 100)
-    # output_list_1.append(y1)
-
-    ########## Testing out explicit euler ##############
-
-    curr_y_sim = y
-    curr_x_sim = x
-
-    # PID Controller section:
-    Kp = 10
-    Ki = 5
-    Kd = 5
-    
-
-    u = PID_controller(i, .01, Kp, curr_y_sim, y_des)
-    
-    y1 = explicit_euler_method(sys_ode, x, y, i, .01)
-    error = y_des - y1
-    output_list_1.append(y1)
-
-  plt.plot(total_time, output_list_1)
+  y = odeint(sys_ode, IC, total_time)
+  output_list_2.append(y)
+  flat_list = [item for sublist in output_list_2 for item in sublist]
+  plt.plot(total_time, flat_list)
+  
+  
+  
+  
+  
+  
+  a = np.linspace(0, 12000, 12000)
+  # plt.plot(a, global_error)
   plt.show()
 
 

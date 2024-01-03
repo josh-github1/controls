@@ -45,6 +45,11 @@ def rk4(sys_ode,
   return yn
 
 
+# (jramayrat) Trying this one:
+# 2*x_ddot + 5*x_dot + 3*x = u
+
+
+# From Prof. Bashash
 # 2*w_dot + 5*w = v
 # w --> wd
 # v = k*(wd-w)

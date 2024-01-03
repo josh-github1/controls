@@ -1,4 +1,4 @@
-# Problem 6.1 simulation 
+# Problem 6.1 simulation from Applied Nonlinear Control textbook by Slotine et al.
 
 from scipy.integrate import odeint
 from matplotlib.pyplot import *

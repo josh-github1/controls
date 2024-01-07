@@ -35,8 +35,6 @@ figure; plot(t,r,t,x)
 
 """
 
-
-
 def explicit_euler_method(plant_ode_converted, y0, t0, t, dt: float):
   """Explicit Euler Method
 
@@ -56,14 +54,6 @@ def explicit_euler_method(plant_ode_converted, y0, t0, t, dt: float):
     y_curr = y_curr + dt*plant_ode_converted(y_curr, t_curr)
     t_curr = t_curr + dt
   return y_curr
-
-
-
-
-
-
-
-
 
 
 def rk4(sys_ode,

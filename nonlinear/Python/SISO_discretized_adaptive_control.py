@@ -1,5 +1,5 @@
 """
-WIP
+WIP Adaptive Control Simulation (equations were done separately on paper)
 
 x_ddot(t) + k*x(t) = u(t) + d*sin(10*math.pi*t)
 
@@ -109,19 +109,19 @@ def main():
     e_dot = (e_curr - e_prev) / dt
     s = e_dot + gain_lambda*e_curr
 
+    # Parameter adaptation integrals
+    integral_k += s*x_sim*dt
+    integral_d += -np.sin(10*math.pi*i)*s*dt
+
+    # Adaptation laws
+    k_est = k_est_init + gain_K_coeff*integral_k
+    d_est = d_est_init + gain_D_coeff*integral_d
+
     # Equation for adaptive controller
     controller_input = x_ddot_desired + k_est*x_ref[i+2] - d_est*np.sin(10*math.pi*i) + gain_lambda*e_dot + gain_eta*s
 
     # Output of the simulated system, provided with controller and estimated parameters computed through adaptation laws.
     x_sim[i+2] = 2*x_sim[i+1] - x_sim[i] + (- k_est*x_sim[i] + controller_input + d_est*np.sin(10*math.pi*i))*dt**2
     x_sim_curr = x_sim[i+2]
-
-    # Parameter adaptation integrals
-    integral_k += s*x_sim*dt
-    integral_d += -np.sin(10*math.pi*i)*s
-
-    # Adaptation laws
-    k_est = k_est_init + gain_K_coeff*integral_k
-    d_est = d_est_init + gain_D_coeff*integral_d
 
     e_prev = e_curr

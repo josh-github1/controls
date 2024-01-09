@@ -157,12 +157,28 @@ def main():
 
     e_prev = e_curr
 
-  fig, axes = plt.subplots(1)
 
-  axes.plot(t[:999], x_arr, label='output')
-  axes.set_title('Actual output')
-  axes.set_ylabel('Amplitude')
-  axes.set_xlabel('Time (seconds)')
+  ####### Section for plotting ##############
+  # Reference: https://matplotlib.org/stable/gallery/subplots_axes_and_figures/subplots_demo.html
+  fig, axes = plt.subplots(1, 4)
+
+  axes[0].plot(t[:999], x_arr, label='output')
+  axes[0].plot(t[:999], x_d_arr, label='output')
+  axes[0].plot(t[:999], e_arr, label='output')
+  axes[0].set_title('Actual output')
+  axes[0].set(ylabel='Amplitude', xlabel='Time (seconds)')
+
+  axes[1].plot(t[:999], k_est_values, label='output')
+  axes[1].set_title('Estimated d parameter values')
+  axes[1].set(ylabel='Amplitude', xlabel='Time (seconds)')
+
+  axes[2].plot(t[:999], d_est_values, label='output')
+  axes[2].set_title('Estimated d parameter values')
+  axes[2].set(ylabel='Amplitude', xlabel='Time (seconds)')
+
+  axes[3].plot(e_dot_arr, e_arr, label='output')
+  axes[3].set_title('Phase Trajectory')
+  axes[3].set(ylabel='e_dot', xlabel='e')
 
   plt.legend()
   plt.show()

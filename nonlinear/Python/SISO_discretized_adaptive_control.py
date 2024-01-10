@@ -14,9 +14,9 @@ reference / desired position is a sinusoidal signal (as I've seen it in Slotine'
 
   ref_in(t) = sin(4*t)
 
-  x_ref[k+2] - 2*x_ref[k+1] + x_ref[k] / dt**2 + k*x_ref[k] = ref_in(t) + d*sin(10*math.pi*k)
+  (x_ref[i+1] - 2*x_ref[i] + x_ref[i-1]) / dt**2 + k*x_ref[k] = ref_in(t) + d*sin(10*math.pi*k)
 
-  x_ref[k+2] = 2*x_ref[k+1] - x_ref[k] + (- k*x_ref[k] + ref_in(t) + d*sin(10*math.pi*k))*dt**2 
+  Reference: https://charlesreid1.com/wiki/Basic_discretization_techniques
 
 """
 
@@ -150,7 +150,7 @@ def main():
     controller_input = x_ddot_desired + k_est*x_ref[i+2] - d_est*np.sin(10*math.pi*i) + gain_lambda*e_dot + gain_eta*s
 
     # Output of the simulated system, provided with controller and estimated parameters computed through adaptation laws.
-    x_sim[i+2] = 2*x_sim[i+1] - x_sim[i] + (- k_est*x_sim[i] + controller_input + d_est*np.sin(10*math.pi*i))*dt**2
+    x_sim[i+1] = 2*x_sim[i] - x_sim[i-1] + (- k_est*x_sim[i] + controller_input + d_est*np.sin(10*math.pi*i))*dt**2
     x_sim_curr = x_sim[i+2]
     x_arr.append(x_sim_curr)
 

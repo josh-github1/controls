@@ -1,2 +1,2 @@
 # Summary
-This repo contains simulations and hand calcs on various linear and nonlinear control problems.
+This repo contains simulations on various linear and nonlinear control problems. I'll upload hand calcs soon.
